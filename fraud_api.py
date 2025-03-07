@@ -48,9 +48,8 @@ def predict_fraud():
             return jsonify({"error": "Model not loaded!"}), 500
 
         data = request.get_json()
-        required_features = ["type", "amount", "oldbalanceOrg", "newbalanceOrig",
-                             "oldbalanceDest", "newbalanceDest", "balance_difference",
-                             "receiver_balance_increase", "is_sender_empty"]
+        required_features = ["step", "type", "amount", "oldbalanceOrg", "newbalanceOrig",
+                     "oldbalanceDest", "newbalanceDest"]
 
         for feature in required_features:
             if feature not in data:
