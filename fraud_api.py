@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 # Load trained fraud detection model
 try:
-    model = joblib.load("fraud_detection_model.pkl")
+    model = joblib.load("final_fraud_detection_model_v2.pkl")
     print("✅ Model loaded successfully!")
 except Exception as e:
     print(f"❌ Error loading model: {str(e)}")
