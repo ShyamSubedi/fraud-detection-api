@@ -1,3 +1,4 @@
+import os
 import sqlite3
 import pandas as pd
 from flask import Flask, request, jsonify
@@ -8,13 +9,13 @@ app = Flask(__name__)
 
 # Load trained fraud detection model
 try:
-    model = joblib.load("final_fraud_detection_model_fixed.pkl")
+    model = joblib.load("final_fraud_detection_model_fixed.pkl")  # Ensure correct model name
     print("✅ Model loaded successfully!")
 except Exception as e:
     print(f"❌ Error loading model: {str(e)}")
     model = None
 
-# Ensure transactions table exists
+# Ensure transactions table exists in SQLite
 def verify_table():
     conn = sqlite3.connect("fraud_detection.db")
     cursor = conn.cursor()
@@ -61,6 +62,7 @@ def predict_fraud():
         prediction = model.predict(df)[0]
         probability = model.predict_proba(df)[0][1]
 
+        # Insert transaction data into SQLite database
         conn = sqlite3.connect("fraud_detection.db")
         cursor = conn.cursor()
         cursor.execute('''
@@ -85,5 +87,7 @@ def predict_fraud():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# Run the Flask app (Render-compatible port handling)
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    port = int(os.environ.get("PORT", 5000))  # Render dynamically assigns a port
+    app.run(host="0.0.0.0", port=port, debug=True)
